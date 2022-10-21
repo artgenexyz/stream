@@ -68,7 +68,15 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      chainId: 1337,
+      ...(
+        process.env.FORKING ? {
+          forking: {
+            url: process.env.MAINNET
+          }
+        } : {
+          chainId: 1337
+        }
+      ),
       timeout: 1000 * 60 * 60 * 24, // 1 day
       gas: 12000000,
       blockGasLimit: 0x1fffffffffffff,
