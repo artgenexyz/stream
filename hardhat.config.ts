@@ -85,11 +85,14 @@ module.exports = {
       accounts: [process.env.GOERLI_PRIVATE_KEY],
     },
     mainnet: {
-      gasPrice: 77000000000,
       timeout: 1000 * 60 * 60 * 24, // 1 day
       url: process.env.MAINNET,
       accounts: [process.env.MAINNET_PRIVATE_KEY],
-    }
+    },
+    polygon: {
+      url: process.env.POLYGON,
+      accounts: [process.env.MAINNET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY
