@@ -250,4 +250,46 @@ describe("stream", function () {
     )
 
   })
+
+  it("should work if members array is empty", async () => {
+    let test = await deployTest()
+    let beforeBalance = await getBalance()
+
+    tx = await deployer.sendTransaction({
+      to: test.address,
+      value: ethers.utils.parseEther("1000")
+    });
+
+    tx = await factory.genesis("empty test", alice.address, [])
+
+    let events = await globalLogs(factory.address)
+    let address = events[0].group
+
+    console.log("empty test deployed", address)
+    expect(address).to.not.equal(deployer.address);
+
+    tx = test.withdrawSuccess(address)
+    await expect(tx).not.to.be.reverted
+
+    const testBalance = await ethers.provider.getBalance(test.address)
+    expect(testBalance).to.equal(0)
+
+    // check that contract doesn't keep money in the contract
+    const balance = await ethers.provider.getBalance(address)
+    expect(balance).to.equal(0)
+    expect(
+      ethers.utils.formatEther(balance)
+    ).to.equal('0.0')
+
+    let afterBalance = await getBalance();
+
+    // check deployerAddress has receiver extra money
+    expect(
+      (afterBalance.alice - beforeBalance.alice).toFixed(1)
+    ).to.equal(
+      (1000).toFixed(1)
+    )
+
+  })
+
 });
