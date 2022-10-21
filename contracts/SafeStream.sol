@@ -51,8 +51,8 @@ contract SafeStream is Initializable {
             total += _members[i].value;
         }
 
-        // check that total is not zero
-        require(total > 0, "total is zero");
+        // check that total is not zero but only for non-empty arrays
+        require(total > 0 || _members.length == 0, "total is zero");
 
         for (uint i = 0; i < _members.length; i++) {
             require(_members[i].total == total, "total is not equal");
@@ -62,7 +62,9 @@ contract SafeStream is Initializable {
     }
 
     receive() external payable {
-        require(_members.length > 0, "1");
+        // if members.length == 0, for-loop will not be executed
+        // and funds will be sent to fallback
+        // require(_members.length > 0, "1");
 
         for (uint i = 0; i < _members.length; i++) {
             Member memory member = _members[i];
